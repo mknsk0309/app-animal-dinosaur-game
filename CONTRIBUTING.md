@@ -6,7 +6,7 @@
 
 1. このリポジトリをフォークする
 2. 機能追加やバグ修正のためのブランチを作成する (`git checkout -b feature/amazing-feature`)
-3. 変更をコミットする (`git commit -m 'Add some amazing feature'`)
+3. 変更をコミットする（[コミットメッセージのルール](docs/commit_rules.md)に従ってください）
 4. ブランチにプッシュする (`git push origin feature/amazing-feature`)
 5. プルリクエストを作成する
 
@@ -15,6 +15,7 @@
 - PEP 8のPythonコーディング規約に従う
 - 関数やクラスには適切なドキュメンテーションコメントを追加する
 - 変数名や関数名は分かりやすい名前を使用する
+- コミットメッセージは[定められたルール](docs/commit_rules.md)に従う
 
 ## プルリクエスト
 

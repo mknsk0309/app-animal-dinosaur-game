@@ -84,6 +84,7 @@
 
 - `docs/game_design.md` - ゲーム設計の詳細
 - `docs/project_structure.md` - プロジェクト構造と実装計画
+- `docs/commit_rules.md` - コミットメッセージのルール
 
 ## 開発計画
 1. 基本的な神経衰弱システムの実装
