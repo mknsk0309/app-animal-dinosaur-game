@@ -14,7 +14,7 @@
 
 1. このリポジトリをクローンします：
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/mknsk0309/app-animal-dinosaur-game.git
    cd app-animal-dinosaur-game
    ```
 

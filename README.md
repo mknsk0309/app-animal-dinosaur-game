@@ -108,7 +108,7 @@ VSCode DevContainerを使用すると、必要な開発環境が自動的に構�
 2. VSCodeの[Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)拡張機能をインストール
 3. リポジトリをクローンして開く
 ```bash
-git clone <repository-url>
+git clone https://github.com/mknsk0309/app-animal-dinosaur-game.git
 code app-animal-dinosaur-game
 ```
 4. VSCodeの左下の緑色のアイコンをクリックし、「Reopen in Container」を選択
@@ -124,7 +124,7 @@ pip install pygame
 
 2. リポジトリをクローン
 ```bash
-git clone <repository-url>
+git clone https://github.com/mknsk0309/app-animal-dinosaur-game.git
 cd app-animal-dinosaur-game
 ```
 
