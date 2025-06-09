@@ -37,7 +37,7 @@ class EnvironmentSelectScreen:
         button_height = 150
         button_margin = 30
         start_x = self.width // 2 - (button_width * 2 + button_margin) // 2
-        start_y = self.height // 2 - button_height // 2
+        start_y = self.height // 2 - (button_height * 2 + button_margin) // 2
         
         # ジャングルボタン
         self.jungle_button = Button(
@@ -156,7 +156,7 @@ class EnvironmentSelectScreen:
         # タイトルを描画
         title_text = "どこであそぶ？"
         title_surface = self.title_font.render(title_text, True, (0, 0, 0))
-        title_rect = title_surface.get_rect(center=(self.width // 2, 80))
+        title_rect = title_surface.get_rect(center=(self.width // 2, 70))
         self.screen.blit(title_surface, title_rect)
         
         # ボタンを描画
