@@ -85,6 +85,7 @@
 - `docs/game_design.md` - ゲーム設計の詳細
 - `docs/project_structure.md` - プロジェクト構造と実装計画
 - `docs/commit_rules.md` - コミットメッセージのルール
+- `docs/devcontainer_usage.md` - VSCode DevContainerの使い方
 
 ## 開発計画
 1. 基本的な神経衰弱システムの実装
@@ -99,6 +100,23 @@
 
 ## 開発開始方法
 
+### 方法1: VSCode DevContainerを使用（推奨）
+
+VSCode DevContainerを使用すると、必要な開発環境が自動的に構築されます。
+
+1. [Visual Studio Code](https://code.visualstudio.com/)と[Docker Desktop](https://www.docker.com/products/docker-desktop)をインストール
+2. VSCodeの[Remote - Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)拡張機能をインストール
+3. リポジトリをクローンして開く
+```bash
+git clone <repository-url>
+code app-animal-dinosaur-game
+```
+4. VSCodeの左下の緑色のアイコンをクリックし、「Reopen in Container」を選択
+
+詳細は[DevContainerの使い方](docs/devcontainer_usage.md)を参照してください。
+
+### 方法2: ローカル環境で開発
+
 1. Pythonとpygameをインストール
 ```bash
 pip install pygame
@@ -110,7 +128,12 @@ git clone <repository-url>
 cd app-animal-dinosaur-game
 ```
 
-3. ゲームを実行
+3. 依存関係をインストール
+```bash
+pip install -r requirements.txt
+```
+
+4. ゲームを実行
 ```bash
 python main.py
 ```
