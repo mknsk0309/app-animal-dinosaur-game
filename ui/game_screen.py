@@ -221,9 +221,6 @@ class GameScreen:
                         # キャラクターを発見したとマークする
                         self.game_manager.discover_character(first_card["type"])
                         
-                        # スコアを追加
-                        self.game_manager.add_score(100)
-                        
                         # すべてのペアが見つかった場合
                         if self.matched_pairs == self.total_pairs:
                             self.game_over = True
@@ -253,16 +250,6 @@ class GameScreen:
         title_rect = title_surface.get_rect(center=(self.width // 2, 40))
         self.screen.blit(title_surface, title_rect)
         
-        # スコアを描画
-        score_text = f"スコア: {self.game_manager.score}"
-        score_surface = self.info_font.render(score_text, True, (255, 255, 255))
-        self.screen.blit(score_surface, (20, 20))
-        
-        # 見つけたペアの数を描画
-        pairs_text = f"みつけたペア: {self.matched_pairs}/{self.total_pairs}"
-        pairs_surface = self.info_font.render(pairs_text, True, (255, 255, 255))
-        self.screen.blit(pairs_surface, (self.width - 200, 20))
-        
         # カードを描画
         for card in self.cards:
             if card["matched"]:
@@ -290,12 +277,6 @@ class GameScreen:
             congrats_surface = congrats_font.render(congrats_text, True, (255, 255, 0))
             congrats_rect = congrats_surface.get_rect(center=(self.width // 2, self.height // 2 - 50))
             self.screen.blit(congrats_surface, congrats_rect)
-            
-            # スコア表示
-            score_text = f"スコア: {self.game_manager.score}"
-            score_surface = congrats_font.render(score_text, True, (255, 255, 255))
-            score_rect = score_surface.get_rect(center=(self.width // 2, self.height // 2 + 50))
-            self.screen.blit(score_surface, score_rect)
         
         # 戻るボタンを描画
         self.back_button.draw(self.screen)
