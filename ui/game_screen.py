@@ -63,6 +63,7 @@ class GameScreen:
         self.first_card = None
         self.second_card = None
         self.wait_time = 0
+        self.is_match = False  # カードが一致したかどうか
         self.matched_pairs = 0
         self.total_pairs = len(self.cards) // 2
         self.game_over = False
@@ -223,13 +224,26 @@ class GameScreen:
                     # 2枚目のカード
                     elif self.second_card is None:
                         self.second_card = i
-                        # 2枚目を選んだ時点で待機時間を設定（難易度に応じて変更）
-                        if self.game_manager.difficulty == "easy":
-                            self.wait_time = 45  # 約0.75秒（45フレーム）
-                        elif self.game_manager.difficulty == "normal":
-                            self.wait_time = 30  # 約0.5秒（30フレーム）
-                        else:  # hard
-                            self.wait_time = 15  # 約0.25秒（15フレーム）
+                        
+                        # 2枚のカードが一致するか確認
+                        first_card = self.cards[self.first_card]
+                        second_card = self.cards[self.second_card]
+                        
+                        # カードが一致したかどうかを記録
+                        self.is_match = first_card["type"] == second_card["type"]
+                        
+                        # 待機時間を設定
+                        if self.is_match:
+                            # ペア成立時は常に30フレーム
+                            self.wait_time = 30  # 0.5秒（30フレーム）
+                        else:
+                            # ペア不成立時は難易度に応じて変更
+                            if self.game_manager.difficulty == "easy":
+                                self.wait_time = 45  # 約0.75秒（45フレーム）
+                            elif self.game_manager.difficulty == "normal":
+                                self.wait_time = 30  # 約0.5秒（30フレーム）
+                            else:  # hard
+                                self.wait_time = 15  # 約0.25秒（15フレーム）.wait_time = 15  # 約0.25秒（15フレーム）
                     break
     
     def update(self):
@@ -241,13 +255,13 @@ class GameScreen:
         if self.wait_time > 0:
             self.wait_time -= 1
             if self.wait_time == 0:
-                # 2枚のカードを比較
+                # 待機時間が終了したら、記録した一致状態に基づいて処理
                 if self.first_card is not None and self.second_card is not None:
                     first_card = self.cards[self.first_card]
                     second_card = self.cards[self.second_card]
                     
                     # カードが一致した場合
-                    if first_card["type"] == second_card["type"]:
+                    if self.is_match:
                         first_card["matched"] = True
                         second_card["matched"] = True
                         self.matched_pairs += 1
@@ -266,6 +280,7 @@ class GameScreen:
                     # カードの選択をリセット
                     self.first_card = None
                     self.second_card = None
+                    self.is_match = False
     
     def draw(self):
         """画面を描画する"""
