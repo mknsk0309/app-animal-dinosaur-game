@@ -11,6 +11,7 @@ from ui.environment_select import EnvironmentSelectScreen
 from ui.encyclopedia_ui import EncyclopediaScreen
 from ui.sticker_book_ui import StickerBookScreen
 from utils.font_manager import FontManager
+from utils.resource_loader import ResourceLoader
 
 class MainMenu:
     """メインメニュー画面クラス"""
@@ -32,6 +33,9 @@ class MainMenu:
         
         # タイトルフォント
         self.title_font = FontManager.get_instance().get_font(64)
+        
+        # リソースローダー
+        self.resource_loader = ResourceLoader.get_instance()
         
         # ボタンの作成
         button_width = 350
@@ -75,15 +79,21 @@ class MainMenu:
             hover_color=(150, 150, 150)
         )
         
-        # 背景画像（仮のプレースホルダー）
-        self.background = None
-        try:
-            self.background = pygame.Surface((self.width, self.height))
-            self.background.fill((240, 248, 255))  # 薄い水色
-        except:
-            print("背景画像の読み込みに失敗しました")
+        # 背景画像の読み込み - 背景色で代用
+        self.background = pygame.Surface((self.width, self.height))
+        self.background.fill((240, 248, 255))  # 薄い水色
         
-        # 動物のキャラクターアニメーション（仮）
+        # タイトルロゴはテキストで代用するためNoneに設定
+        self.title_logo = None
+        
+        # キャラクター画像の読み込み
+        self.character_image = self.resource_loader.load_character_image(
+            "lion", 
+            "jungle", 
+            (80, 80)
+        )
+        
+        # 動物のキャラクターアニメーション
         self.animal_pos = [100, self.height - 150]
         self.animal_direction = [1, 0]
         self.animal_speed = 2
@@ -125,21 +135,33 @@ class MainMenu:
         # 背景を描画
         if self.background:
             self.screen.blit(self.background, (0, 0))
+        else:
+            # 背景画像がない場合は色で塗りつぶす
+            self.screen.fill((240, 248, 255))
         
-        # タイトルを描画（アニメーションなし）
-        title_text = "どうぶつと恐竜の"
-        title_surface = self.title_font.render(title_text, True, (0, 0, 0))
-        title_rect = title_surface.get_rect(center=(self.width // 2, 100))
-        self.screen.blit(title_surface, title_rect)
+        # タイトルロゴを描画
+        if self.title_logo:
+            logo_rect = self.title_logo.get_rect(center=(self.width // 2, 130))
+            self.screen.blit(self.title_logo, logo_rect)
+        else:
+            # タイトルロゴがない場合はテキストで描画
+            title_text = "どうぶつと恐竜の"
+            title_surface = self.title_font.render(title_text, True, (0, 0, 0))
+            title_rect = title_surface.get_rect(center=(self.width // 2, 100))
+            self.screen.blit(title_surface, title_rect)
+            
+            # サブタイトルを描画
+            subtitle_text = "かくれんぼ神経衰弱"
+            subtitle_surface = self.title_font.render(subtitle_text, True, (0, 0, 0))
+            subtitle_rect = subtitle_surface.get_rect(center=(self.width // 2, 160))
+            self.screen.blit(subtitle_surface, subtitle_rect)
         
-        # サブタイトルを描画
-        subtitle_text = "かくれんぼ神経衰弱"
-        subtitle_surface = self.title_font.render(subtitle_text, True, (0, 0, 0))
-        subtitle_rect = subtitle_surface.get_rect(center=(self.width // 2, 160))
-        self.screen.blit(subtitle_surface, subtitle_rect)
-        
-        # 仮の動物キャラクターを描画（円で代用）
-        pygame.draw.circle(self.screen, (255, 165, 0), self.animal_pos, 30)
+        # キャラクターを描画
+        if self.character_image:
+            self.screen.blit(self.character_image, self.animal_pos)
+        else:
+            # キャラクター画像がない場合は円で代用
+            pygame.draw.circle(self.screen, (255, 165, 0), self.animal_pos, 30)
         
         # ボタンを描画
         self.start_button.draw(self.screen)

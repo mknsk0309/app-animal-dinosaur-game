@@ -9,6 +9,7 @@ import pygame
 from ui.button import Button
 from ui.game_screen import GameScreen
 from utils.font_manager import FontManager
+from utils.resource_loader import ResourceLoader
 
 class EnvironmentSelectScreen:
     """環境選択画面クラス"""
@@ -32,12 +33,29 @@ class EnvironmentSelectScreen:
         self.title_font = FontManager.get_instance().get_font(48)
         self.description_font = FontManager.get_instance().get_font(24)
         
+        # リソースローダー
+        self.resource_loader = ResourceLoader.get_instance()
+        
+        # 背景画像はダミーで代用
+        self.background_image = None
+        
         # 環境ボタンの作成
         button_width = 200
         button_height = 150
         button_margin = 30
         start_x = self.width // 2 - (button_width * 2 + button_margin) // 2
         start_y = self.height // 2 - (button_height * 2 + button_margin) // 2
+        
+        # 環境のサムネイル画像
+        self.environment_thumbnails = {
+            "jungle": self.resource_loader.load_background_image("jungle", (button_width, button_height)),
+            "ocean": self.resource_loader.load_background_image("ocean", (button_width, button_height)),
+            "desert": self.resource_loader.load_background_image("desert", (button_width, button_height)),
+            "forest": self.resource_loader.load_background_image("forest", (button_width, button_height))
+        }
+        
+        # ロックアイコンはダミーで代用
+        self.lock_icon = None
         
         # ジャングルボタン
         self.jungle_button = Button(
@@ -99,12 +117,12 @@ class EnvironmentSelectScreen:
             hover_color=(130, 130, 130)
         )
         
-        # 環境のロック状態（仮）
+        # 環境のロック状態（全て解放）
         self.environment_locked = {
             "jungle": False,
             "ocean": False,
-            "desert": True,
-            "forest": True
+            "desert": False,
+            "forest": False
         }
     
     def handle_event(self, event):
@@ -150,8 +168,12 @@ class EnvironmentSelectScreen:
     
     def draw(self):
         """画面を描画する"""
-        # 背景を描画（薄い水色）
-        self.screen.fill((240, 248, 255))
+        # 背景を描画
+        if self.background_image:
+            self.screen.blit(self.background_image, (0, 0))
+        else:
+            # 背景画像がない場合は色で塗りつぶす
+            self.screen.fill((240, 248, 255))
         
         # タイトルを描画
         title_text = "どこであそぶ？"
@@ -166,12 +188,55 @@ class EnvironmentSelectScreen:
         self.forest_button.draw(self.screen)
         self.back_button.draw(self.screen)
         
+        # 環境のサムネイル画像を描画
+        if self.environment_thumbnails["jungle"]:
+            self.screen.blit(self.environment_thumbnails["jungle"], self.jungle_button.rect)
+        
+        if self.environment_thumbnails["ocean"]:
+            self.screen.blit(self.environment_thumbnails["ocean"], self.ocean_button.rect)
+        
+        if self.environment_thumbnails["desert"]:
+            self.screen.blit(self.environment_thumbnails["desert"], self.desert_button.rect)
+        
+        if self.environment_thumbnails["forest"]:
+            self.screen.blit(self.environment_thumbnails["forest"], self.forest_button.rect)
+        
+        # ボタンのテキストを再描画（サムネイルの上に）
+        self._draw_button_text(self.jungle_button, "ジャングル")
+        self._draw_button_text(self.ocean_button, "うみ")
+        self._draw_button_text(self.desert_button, "さばく")
+        self._draw_button_text(self.forest_button, "もり")
+        
         # ロックされた環境の表示
         if self.environment_locked["desert"]:
             self._draw_lock(self.desert_button.rect)
         
         if self.environment_locked["forest"]:
             self._draw_lock(self.forest_button.rect)
+        
+        # 戻るボタンを描画
+        self.back_button.draw(self.screen)
+    
+    def _draw_button_text(self, button, text):
+        """
+        ボタンのテキストを描画する
+        
+        Args:
+            button: ボタンオブジェクト
+            text: 表示するテキスト
+        """
+        font = FontManager.get_instance().get_font(36)
+        text_surface = font.render(text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=button.rect.center)
+        
+        # テキストの背景を半透明にして読みやすくする
+        bg_rect = text_rect.inflate(20, 10)
+        bg_surface = pygame.Surface((bg_rect.width, bg_rect.height), pygame.SRCALPHA)
+        bg_surface.fill((0, 0, 0, 128))
+        self.screen.blit(bg_surface, bg_rect)
+        
+        # テキストを描画
+        self.screen.blit(text_surface, text_rect)
     
     def _draw_lock(self, rect):
         """
@@ -185,28 +250,34 @@ class EnvironmentSelectScreen:
         overlay.fill((0, 0, 0, 128))
         self.screen.blit(overlay, rect)
         
-        # ロックアイコン（簡易的な描画）
-        lock_color = (255, 255, 255)
-        lock_width = 40
-        lock_height = 50
-        lock_x = rect.centerx - lock_width // 2
-        lock_y = rect.centery - lock_height // 2
-        
-        # 南京錠の下部（四角形）
-        pygame.draw.rect(
-            self.screen, 
-            lock_color, 
-            (lock_x, lock_y + 15, lock_width, lock_height - 15),
-            border_radius=5
-        )
-        
-        # 南京錠の上部（弧）
-        pygame.draw.arc(
-            self.screen,
-            lock_color,
-            (lock_x + 5, lock_y - 10, lock_width - 10, 30),
-            3.14, 0, 3
-        )
+        # ロックアイコンを描画
+        if self.lock_icon:
+            lock_x = rect.centerx - self.lock_icon.get_width() // 2
+            lock_y = rect.centery - self.lock_icon.get_height() // 2
+            self.screen.blit(self.lock_icon, (lock_x, lock_y))
+        else:
+            # ロックアイコンがない場合は簡易的に描画
+            lock_color = (255, 255, 255)
+            lock_width = 40
+            lock_height = 50
+            lock_x = rect.centerx - lock_width // 2
+            lock_y = rect.centery - lock_height // 2
+            
+            # 南京錠の下部（四角形）
+            pygame.draw.rect(
+                self.screen, 
+                lock_color, 
+                (lock_x, lock_y + 15, lock_width, lock_height - 15),
+                border_radius=5
+            )
+            
+            # 南京錠の上部（弧）
+            pygame.draw.arc(
+                self.screen,
+                lock_color,
+                (lock_x + 5, lock_y - 10, lock_width - 10, 30),
+                3.14, 0, 3
+            )
     
     def get_next_screen(self):
         """
