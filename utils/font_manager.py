@@ -38,6 +38,7 @@ class FontManager:
         if not os.path.exists(self.font_path):
             print(f"警告: フォントファイルが見つかりません: {self.font_path}")
             print("システムのデフォルトフォントを使用します。")
+            self.font_path = None
     
     def get_font(self, size):
         """
@@ -55,7 +56,10 @@ class FontManager:
         
         # フォントを作成
         try:
-            font = pygame.font.Font(self.font_path, size)
+            if self.font_path:
+                font = pygame.font.Font(self.font_path, size)
+            else:
+                font = pygame.font.SysFont(None, size)
         except:
             # フォントの読み込みに失敗した場合はデフォルトフォントを使用
             print(f"フォントの読み込みに失敗しました: {self.font_path}")

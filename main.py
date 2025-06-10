@@ -8,6 +8,8 @@
 
 import sys
 import pygame
+import asyncio
+import platform
 from ui.menu import MainMenu
 from game.game_manager import GameManager
 from utils.config import Config
@@ -42,7 +44,7 @@ class Game:
         # ゲームの実行状態
         self.running = True
     
-    def run(self):
+    async def run(self):
         """メインゲームループ"""
         while self.running:
             # イベント処理
@@ -68,11 +70,25 @@ class Game:
             
             # フレームレートの制御
             self.clock.tick(self.fps)
+            
+            # WebAssembly環境では制御を戻す必要がある
+            if platform.system() == "Emscripten":
+                await asyncio.sleep(0)
         
         # ゲーム終了時の処理
         pygame.quit()
         sys.exit()
 
-if __name__ == "__main__":
+# Pygbagのために非同期メイン関数を追加
+async def main():
     game = Game()
-    game.run()
+    await game.run()
+
+if __name__ == "__main__":
+    if platform.system() == "Emscripten":
+        # ブラウザ環境では非同期実行
+        asyncio.run(main())
+    else:
+        # デスクトップ環境では通常実行
+        game = Game()
+        asyncio.run(game.run())
