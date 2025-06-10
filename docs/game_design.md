@@ -1,4 +1,4 @@
-# どうぶつと恐竜のかくれんぼ神経衰弱 - 詳細設計書
+# どうぶつ・きょうりゅうかくれんぼ - 詳細設計書
 
 ## キャラクター設計
 
@@ -120,24 +120,39 @@ app-animal-dinosaur-game/
 ├── main.py              # メインゲームループ
 ├── game/
 │   ├── __init__.py
-│   ├── card.py          # カードクラス
-│   ├── character.py     # キャラクタークラス
+│   ├── game_manager.py  # ゲーム全体の管理
 │   ├── environment.py   # 環境クラス
-│   ├── encyclopedia.py  # 図鑑クラス
-│   └── sticker_book.py  # シールブッククラス
+│   ├── card.py          # カードクラス（予定）
+│   ├── character.py     # キャラクタークラス（予定）
+│   ├── encyclopedia.py  # 図鑑クラス（予定）
+│   └── sticker_book.py  # シールブッククラス（予定）
+├── ui/
+│   ├── __init__.py
+│   ├── button.py        # ボタンクラス
+│   ├── menu.py          # メインメニュー
+│   ├── environment_select.py # 環境選択画面
+│   ├── game_screen.py   # ゲーム画面
+│   ├── encyclopedia_ui.py # 図鑑UI（開発中）
+│   └── sticker_book_ui.py # シールブックUI（開発中）
 ├── assets/
 │   ├── images/          # 画像ファイル
-│   ├── sounds/          # 音声ファイル
+│   │   ├── backgrounds/ # 背景画像
+│   │   ├── card_backs/  # カード裏面画像
+│   │   ├── characters/  # キャラクター画像
+│   │   │   ├── animals/ # 動物画像
+│   │   │   └── dinosaurs/ # 恐竜画像
+│   │   └── ui/          # UI要素画像
+│   ├── sounds/          # 音声ファイル（予定）
 │   └── fonts/           # フォントファイル
-├── data/
+├── data/                # データファイル（予定）
 │   ├── characters.json  # キャラクター情報
 │   ├── environments.json # 環境情報
 │   └── user_data.json   # ユーザーデータ保存
 └── utils/
     ├── __init__.py
-    ├── animation.py     # アニメーション関連
-    ├── sound.py         # 音声関連
-    └── ui.py            # UI関連
+    ├── config.py        # 設定管理
+    ├── font_manager.py  # フォント管理
+    └── resource_loader.py # リソース読み込み
 ```
 
 ### データ構造
