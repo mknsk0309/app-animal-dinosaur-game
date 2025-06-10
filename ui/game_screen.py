@@ -162,8 +162,17 @@ class GameScreen:
                     "front_image": card_front_image
                 })
         
+        # カードの位置情報を保存
+        card_positions = []
+        for card in self.cards:
+            card_positions.append(card["rect"].copy())
+        
         # カードをシャッフル
         random.shuffle(self.cards)
+        
+        # シャッフル後のカードに位置情報を再設定
+        for i, card in enumerate(self.cards):
+            card["rect"] = card_positions[i]
     
     def handle_event(self, event):
         """
