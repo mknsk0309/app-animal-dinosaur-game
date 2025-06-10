@@ -92,18 +92,33 @@ class GameScreen:
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
         start_y = (self.height - (rows * card_height + (rows - 1) * margin)) // 2
         
-        # カードの作成
-        self.cards = []
-        card_types = ["lion", "monkey", "elephant", "giraffe", "tiger", "panda"]
+        # 環境に応じたキャラクターを取得
+        from game.environment import Environment
+        characters = Environment.get_characters(self.environment)
+        
+        # キャラクターが足りない場合は同じキャラクターを複数回使用
+        while len(characters) < 6:
+            # 既存のキャラクターを複製して追加
+            if len(characters) > 0:
+                characters.append(characters[0])  # 最初のキャラクターを再利用
+            else:
+                # 万が一キャラクターがない場合はデフォルトを使用
+                characters = ["dolphin", "whale", "turtle"]
         
         # 難易度に応じたペア数
         pairs_count = 3 if self.game_manager.difficulty == "easy" else 6
+        pairs_count = min(pairs_count, len(characters))  # キャラクター数を超えないようにする
+        
+        # 使用するキャラクターを選択
+        import random
+        selected_characters = random.sample(characters, pairs_count)
         
         # カードの作成
+        self.cards = []
         for i in range(rows):
             for j in range(cols):
                 index = i * cols + j
-                card_type = card_types[index // 2 % pairs_count]
+                card_type = selected_characters[index // 2 % pairs_count]
                 x = start_x + j * (card_width + margin)
                 y = start_y + i * (card_height + margin)
                 
@@ -111,7 +126,8 @@ class GameScreen:
                 card_back_image = self.resource_loader.load_card_image(
                     card_type, 
                     flipped=True, 
-                    scale=(card_width, card_height)
+                    scale=(card_width, card_height),
+                    environment=self.environment
                 )
                 
                 card_front_image = self.resource_loader.load_card_image(
@@ -130,7 +146,6 @@ class GameScreen:
                 })
         
         # カードをシャッフル
-        import random
         random.shuffle(self.cards)
     
     def handle_event(self, event):
@@ -232,13 +247,8 @@ class GameScreen:
             self.screen.fill(bg_color)
         
         # 環境名を描画
-        environment_names = {
-            "jungle": "ジャングル",
-            "ocean": "うみ",
-            "desert": "さばく",
-            "forest": "もり"
-        }
-        title_text = f"{environment_names.get(self.environment, '不明')}で あそぶ"
+        from game.environment import Environment
+        title_text = f"{Environment.get_name(self.environment)}で あそぶ"
         title_surface = self.title_font.render(title_text, True, (255, 255, 255))
         title_rect = title_surface.get_rect(center=(self.width // 2, 40))
         self.screen.blit(title_surface, title_rect)
@@ -264,16 +274,35 @@ class GameScreen:
                 # めくられたカード（表面）
                 self.screen.blit(card["front_image"], card["rect"])
                 
-                # 動物の名前を描画
+                # 動物・恐竜の名前を描画
                 card_names = {
+                    # 動物
                     "lion": "ライオン",
                     "monkey": "サル",
                     "elephant": "ゾウ",
                     "giraffe": "キリン",
                     "tiger": "トラ",
-                    "panda": "パンダ"
+                    "panda": "パンダ",
+                    "dolphin": "イルカ",
+                    "whale": "クジラ",
+                    "turtle": "カメ",
+                    "camel": "ラクダ",
+                    "scorpion": "サソリ",
+                    "lizard": "トカゲ",
+                    "fox": "キツネ",
+                    "rabbit": "ウサギ",
+                    "squirrel": "リス",
+                    # 恐竜
+                    "tyrannosaurus": "ティラノサウルス",
+                    "velociraptor": "ヴェロキラプトル",
+                    "plesiosaurus": "プレシオサウルス",
+                    "mosasaurus": "モササウルス",
+                    "pteranodon": "プテラノドン",
+                    "spinosaurus": "スピノサウルス",
+                    "triceratops": "トリケラトプス",
+                    "stegosaurus": "ステゴサウルス"
                 }
-                name = card_names.get(card["type"], "")
+                name = card_names.get(card["type"], card["type"])
                 name_surface = self.info_font.render(name, True, (0, 0, 0))
                 name_rect = name_surface.get_rect(center=(card["rect"].centerx, card["rect"].bottom + 20))
                 self.screen.blit(name_surface, name_rect)

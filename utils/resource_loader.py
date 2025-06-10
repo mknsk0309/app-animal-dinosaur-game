@@ -163,7 +163,7 @@ class ResourceLoader:
         # キャラクター画像はアスペクト比を維持して読み込む
         return self.load_image(path, scale, keep_aspect_ratio=True)
     
-    def load_card_image(self, card_type, flipped=False, scale=None):
+    def load_card_image(self, card_type, flipped=False, scale=None, environment=None):
         """
         カード画像を読み込む
         
@@ -171,19 +171,29 @@ class ResourceLoader:
             card_type (str): カードの種類（"lion", "monkey"など）
             flipped (bool): 裏返しかどうか
             scale (tuple, optional): 画像のスケール (width, height)
+            environment (str, optional): 環境（"jungle", "ocean"など）
             
         Returns:
             pygame.Surface: カード画像
         """
         if flipped:
-            # 裏面の画像（ランダムに選択）
+            # 裏面の画像（環境に応じてランダムに選択）
             import random
-            card_backs = ["bubble", "cactus", "coral", "flower", "grass", 
-                         "mushroom", "rock", "sand", "seaweed", "tree1", "tree2"]
+            from game.environment import Environment
+            
+            if environment:
+                # 環境に応じたカード裏面を選択
+                card_backs = Environment.get_card_backs(environment)
+            else:
+                # 環境が指定されていない場合はすべてのカード裏面から選択
+                card_backs = ["bubble", "cactus", "coral", "flower", "grass", 
+                             "mushroom", "rock", "sand", "seaweed", "tree1", "tree2"]
+            
             back_type = random.choice(card_backs)
             path = os.path.join("card_backs", f"{back_type}.png")
         else:
             # 表面の画像 - 動物か恐竜かを判定
+            from game.environment import Environment
             animal_types = ["lion", "monkey", "elephant", "giraffe", "tiger", "panda", 
                            "dolphin", "whale", "turtle", "camel", "scorpion", "lizard", 
                            "fox", "rabbit", "squirrel"]
