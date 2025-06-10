@@ -145,13 +145,13 @@ class MainMenu:
             self.screen.blit(self.title_logo, logo_rect)
         else:
             # タイトルロゴがない場合はテキストで描画
-            title_text = "どうぶつと恐竜の"
+            title_text = "どうぶつ・きょうりゅう"
             title_surface = self.title_font.render(title_text, True, (0, 0, 0))
             title_rect = title_surface.get_rect(center=(self.width // 2, 100))
             self.screen.blit(title_surface, title_rect)
             
             # サブタイトルを描画
-            subtitle_text = "かくれんぼ神経衰弱"
+            subtitle_text = "かくれんぼ"
             subtitle_surface = self.title_font.render(subtitle_text, True, (0, 0, 0))
             subtitle_rect = subtitle_surface.get_rect(center=(self.width // 2, 160))
             self.screen.blit(subtitle_surface, subtitle_rect)

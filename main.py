@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-どうぶつと恐竜のかくれんぼ神経衰弱
+どうぶつ・きょうりゅうかくれんぼ
 メインゲームファイル
 """
 
@@ -32,7 +32,7 @@ class Game:
         self.screen_width = self.config.get("screen_width", 800)
         self.screen_height = self.config.get("screen_height", 600)
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        pygame.display.set_caption("どうぶつと恐竜のかくれんぼ神経衰弱")
+        pygame.display.set_caption("どうぶつ・きょうりゅうかくれんぼ")
         
         # ゲームの状態管理
         self.game_manager = GameManager()
