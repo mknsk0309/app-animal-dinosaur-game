@@ -61,8 +61,8 @@ class MainMenu:
             start_y + button_height + button_margin,
             button_width,
             button_height,
-            "ずかん（開発中）",
-            font_size=36,
+            "ずかん",
+            font_size=48,
             color=(150, 150, 150),  # グレー色（非活性）
             hover_color=(150, 150, 150)
         )
@@ -73,8 +73,8 @@ class MainMenu:
             start_y + (button_height + button_margin) * 2,
             button_width,
             button_height,
-            "シールブック（開発中）",
-            font_size=32,
+            "シールブック",
+            font_size=48,
             color=(150, 150, 150),  # グレー色（非活性）
             hover_color=(150, 150, 150)
         )
