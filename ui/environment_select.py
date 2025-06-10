@@ -117,12 +117,12 @@ class EnvironmentSelectScreen:
             hover_color=(130, 130, 130)
         )
         
-        # 環境のロック状態（仮）
+        # 環境のロック状態（全て解放）
         self.environment_locked = {
             "jungle": False,
             "ocean": False,
-            "desert": True,
-            "forest": True
+            "desert": False,
+            "forest": False
         }
     
     def handle_event(self, event):
