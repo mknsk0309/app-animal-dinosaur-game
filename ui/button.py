@@ -67,6 +67,18 @@ class Button:
         # ホバー状態を更新
         self.is_hovered = self.rect.collidepoint(mouse_pos)
         
+        # タッチイベントの処理（ホバー状態の更新）
+        for event in pygame.event.get([pygame.FINGERMOTION, pygame.FINGERDOWN]):
+            if event.type in (pygame.FINGERMOTION, pygame.FINGERDOWN):
+                # タッチ位置をスクリーン座標に変換
+                display_size = pygame.display.get_surface().get_size()
+                touch_x = event.x * display_size[0]
+                touch_y = event.y * display_size[1]
+                
+                # ボタンの領域内かチェック
+                if self.rect.collidepoint(touch_x, touch_y):
+                    self.is_hovered = True
+        
         # アニメーション更新
         if self.is_hovered:
             self.target_scale = 1.05
@@ -86,12 +98,28 @@ class Button:
         Returns:
             bool: クリックされたかどうか
         """
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        # タッチイベントの処理を追加
+        if event.type == pygame.FINGERDOWN:
+            # タッチ位置をスクリーン座標に変換
+            display_size = pygame.display.get_surface().get_size()
+            touch_x = event.x * display_size[0]
+            touch_y = event.y * display_size[1]
+            
+            # ボタンの領域内かチェック
+            if self.rect.collidepoint(touch_x, touch_y):
+                self.is_clicked = True
+                if self.click_sound:
+                    self.click_sound.play()
+                return True
+        
+        # 通常のマウスクリック処理
+        elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1 and self.is_hovered:  # 左クリック
                 self.is_clicked = True
                 if self.click_sound:
                     self.click_sound.play()
                 return True
+        
         return False
     
     def draw(self, screen):
