@@ -80,13 +80,24 @@ class GameScreen:
         # 難易度に応じたカードの配置
         if self.game_manager.difficulty == "easy":
             rows, cols = 2, 3  # 6枚（3ペア）
-        else:
-            rows, cols = 3, 4  # 12枚（6ペア）
+        elif self.game_manager.difficulty == "normal":
+            rows, cols = 2, 5  # 10枚（5ペア）
+        else:  # hard
+            rows, cols = 2, 7  # 14枚（7ペア）
         
-        # カードのサイズと間隔
-        card_width = 140
-        card_height = 200
-        margin = 30
+        # 難易度に応じてカードのサイズと間隔を調整
+        if self.game_manager.difficulty == "easy":
+            card_width = 140
+            card_height = 200
+            margin = 30
+        elif self.game_manager.difficulty == "normal":
+            card_width = 110
+            card_height = 160
+            margin = 25
+        else:  # hard
+            card_width = 90
+            card_height = 130
+            margin = 20
         
         # カードの配置開始位置
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
@@ -106,7 +117,13 @@ class GameScreen:
                 characters = ["dolphin", "whale", "turtle"]
         
         # 難易度に応じたペア数
-        pairs_count = 3 if self.game_manager.difficulty == "easy" else 6
+        if self.game_manager.difficulty == "easy":
+            pairs_count = 3
+        elif self.game_manager.difficulty == "normal":
+            pairs_count = 5
+        else:  # hard
+            pairs_count = 7
+        
         pairs_count = min(pairs_count, len(characters))  # キャラクター数を超えないようにする
         
         # 使用するキャラクターを選択
@@ -194,8 +211,13 @@ class GameScreen:
                     # 2枚目のカード
                     elif self.second_card is None:
                         self.second_card = i
-                        # 2枚目を選んだ時点で待機時間を設定
-                        self.wait_time = 30  # 約0.5秒（30フレーム）
+                        # 2枚目を選んだ時点で待機時間を設定（難易度に応じて変更）
+                        if self.game_manager.difficulty == "easy":
+                            self.wait_time = 45  # 約0.75秒（45フレーム）
+                        elif self.game_manager.difficulty == "normal":
+                            self.wait_time = 30  # 約0.5秒（30フレーム）
+                        else:  # hard
+                            self.wait_time = 15  # 約0.25秒（15フレーム）
                     break
     
     def update(self):

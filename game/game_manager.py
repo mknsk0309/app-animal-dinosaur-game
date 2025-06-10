@@ -66,6 +66,6 @@ class GameManager:
         難易度を設定する
         
         Args:
-            difficulty (str): 難易度 ("easy" または "normal")
+            difficulty (str): 難易度 ("easy", "normal", または "hard")
         """
         self.difficulty = difficulty
