@@ -150,12 +150,11 @@ class ResourceLoader:
         Returns:
             pygame.Surface: キャラクター画像
         """
-        # 動物か恐竜かを判定（仮の実装）
-        animal_types = ["lion", "monkey", "elephant", "giraffe", "tiger", "panda", 
-                       "dolphin", "whale", "turtle", "camel", "scorpion", "lizard", 
-                       "fox", "rabbit", "squirrel"]
+        # Characterクラスを使用して動物か恐竜かを判定
+        from game.character import Character
+        character_info = Character.get_character_info(character_type)
         
-        if character_type in animal_types:
+        if character_info and character_info.get("type") == Character.TYPE_ANIMAL:
             path = os.path.join("characters", "animals", f"{character_type}.png")
         else:
             path = os.path.join("characters", "dinosaurs", f"{character_type}.png")
@@ -192,13 +191,11 @@ class ResourceLoader:
             back_type = random.choice(card_backs)
             path = os.path.join("card_backs", f"{back_type}.png")
         else:
-            # 表面の画像 - 動物か恐竜かを判定
-            from game.environment import Environment
-            animal_types = ["lion", "monkey", "elephant", "giraffe", "tiger", "panda", 
-                           "dolphin", "whale", "turtle", "camel", "scorpion", "lizard", 
-                           "fox", "rabbit", "squirrel"]
+            # 表面の画像 - Characterクラスを使用して動物か恐竜かを判定
+            from game.character import Character
+            character_info = Character.get_character_info(card_type)
             
-            if card_type in animal_types:
+            if character_info and character_info.get("type") == Character.TYPE_ANIMAL:
                 path = os.path.join("characters", "animals", f"{card_type}.png")
             else:
                 path = os.path.join("characters", "dinosaurs", f"{card_type}.png")

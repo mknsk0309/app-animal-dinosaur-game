@@ -80,24 +80,38 @@ class GameScreen:
         # 難易度に応じたカードの配置
         if self.game_manager.difficulty == "easy":
             rows, cols = 2, 3  # 6枚（3ペア）
-        else:
-            rows, cols = 3, 4  # 12枚（6ペア）
+            pairs_count = 3
+        elif self.game_manager.difficulty == "normal":
+            rows, cols = 2, 5  # 10枚（5ペア）
+            pairs_count = 5
+        else:  # hard
+            rows, cols = 2, 7  # 14枚（7ペア）
+            pairs_count = 7
         
-        # カードのサイズと間隔
-        card_width = 140
-        card_height = 200
-        margin = 30
+        # 難易度に応じてカードのサイズと間隔を調整
+        if self.game_manager.difficulty == "easy":
+            card_width = 140
+            card_height = 200
+            margin = 30
+        elif self.game_manager.difficulty == "normal":
+            card_width = 110
+            card_height = 160
+            margin = 25
+        else:  # hard
+            card_width = 90
+            card_height = 130
+            margin = 20
         
         # カードの配置開始位置
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
         start_y = (self.height - (rows * card_height + (rows - 1) * margin)) // 2
         
-        # 環境に応じたキャラクターを取得
-        from game.environment import Environment
-        characters = Environment.get_characters(self.environment)
+        # 環境と難易度に応じたキャラクターを取得
+        from game.character import Character
+        characters = Character.get_characters_by_environment(self.environment, self.game_manager.difficulty)
         
         # キャラクターが足りない場合は同じキャラクターを複数回使用
-        while len(characters) < 6:
+        while len(characters) < pairs_count:
             # 既存のキャラクターを複製して追加
             if len(characters) > 0:
                 characters.append(characters[0])  # 最初のキャラクターを再利用
@@ -105,48 +119,52 @@ class GameScreen:
                 # 万が一キャラクターがない場合はデフォルトを使用
                 characters = ["dolphin", "whale", "turtle"]
         
-        # 難易度に応じたペア数
-        pairs_count = 3 if self.game_manager.difficulty == "easy" else 6
-        pairs_count = min(pairs_count, len(characters))  # キャラクター数を超えないようにする
-        
-        # 使用するキャラクターを選択
+        # 使用するキャラクターを選択（重複なし）
         import random
         selected_characters = random.sample(characters, pairs_count)
         
-        # カードの作成
-        self.cards = []
+        # カードの位置を作成
+        positions = []
         for i in range(rows):
             for j in range(cols):
-                index = i * cols + j
-                card_type = selected_characters[index // 2 % pairs_count]
                 x = start_x + j * (card_width + margin)
                 y = start_y + i * (card_height + margin)
-                
-                # カード画像の読み込み
-                card_back_image = self.resource_loader.load_card_image(
-                    card_type, 
-                    flipped=True, 
-                    scale=(card_width, card_height),
-                    environment=self.environment
-                )
-                
-                card_front_image = self.resource_loader.load_card_image(
-                    card_type, 
-                    flipped=False, 
-                    scale=(card_width, card_height)
-                )
-                
-                self.cards.append({
-                    "rect": pygame.Rect(x, y, card_width, card_height),
-                    "type": card_type,
-                    "flipped": False,
-                    "matched": False,
-                    "back_image": card_back_image,
-                    "front_image": card_front_image
-                })
+                positions.append((x, y))
         
-        # カードをシャッフル
-        random.shuffle(self.cards)
+        # 位置をシャッフル
+        random.shuffle(positions)
+        
+        # カードの作成
+        self.cards = []
+        
+        # 各キャラクターについて2枚ずつカードを作成
+        for character in selected_characters:
+            for _ in range(2):  # 各キャラクター2枚ずつ
+                if positions:
+                    x, y = positions.pop(0)
+                    
+                    # カード画像の読み込み
+                    card_back_image = self.resource_loader.load_card_image(
+                        character, 
+                        flipped=True, 
+                        scale=(card_width, card_height),
+                        environment=self.environment
+                    )
+                    
+                    card_front_image = self.resource_loader.load_card_image(
+                        character, 
+                        flipped=False, 
+                        scale=(card_width, card_height)
+                    )
+                    
+                    self.cards.append({
+                        "rect": pygame.Rect(x, y, card_width, card_height),
+                        "type": character,
+                        "flipped": False,
+                        "matched": False,
+                        "back_image": card_back_image,
+                        "front_image": card_front_image
+                    })
     
     def handle_event(self, event):
         """
@@ -194,8 +212,13 @@ class GameScreen:
                     # 2枚目のカード
                     elif self.second_card is None:
                         self.second_card = i
-                        # 2枚目を選んだ時点で待機時間を設定
-                        self.wait_time = 30  # 約0.5秒（30フレーム）
+                        # 2枚目を選んだ時点で待機時間を設定（難易度に応じて変更）
+                        if self.game_manager.difficulty == "easy":
+                            self.wait_time = 45  # 約0.75秒（45フレーム）
+                        elif self.game_manager.difficulty == "normal":
+                            self.wait_time = 30  # 約0.5秒（30フレーム）
+                        else:  # hard
+                            self.wait_time = 15  # 約0.25秒（15フレーム）
                     break
     
     def update(self):
@@ -220,9 +243,6 @@ class GameScreen:
                         
                         # キャラクターを発見したとマークする
                         self.game_manager.discover_character(first_card["type"])
-                        
-                        # スコアを追加
-                        self.game_manager.add_score(100)
                         
                         # すべてのペアが見つかった場合
                         if self.matched_pairs == self.total_pairs:
@@ -253,16 +273,6 @@ class GameScreen:
         title_rect = title_surface.get_rect(center=(self.width // 2, 40))
         self.screen.blit(title_surface, title_rect)
         
-        # スコアを描画
-        score_text = f"スコア: {self.game_manager.score}"
-        score_surface = self.info_font.render(score_text, True, (255, 255, 255))
-        self.screen.blit(score_surface, (20, 20))
-        
-        # 見つけたペアの数を描画
-        pairs_text = f"みつけたペア: {self.matched_pairs}/{self.total_pairs}"
-        pairs_surface = self.info_font.render(pairs_text, True, (255, 255, 255))
-        self.screen.blit(pairs_surface, (self.width - 200, 20))
-        
         # カードを描画
         for card in self.cards:
             if card["matched"]:
@@ -290,12 +300,6 @@ class GameScreen:
             congrats_surface = congrats_font.render(congrats_text, True, (255, 255, 0))
             congrats_rect = congrats_surface.get_rect(center=(self.width // 2, self.height // 2 - 50))
             self.screen.blit(congrats_surface, congrats_rect)
-            
-            # スコア表示
-            score_text = f"スコア: {self.game_manager.score}"
-            score_surface = congrats_font.render(score_text, True, (255, 255, 255))
-            score_rect = score_surface.get_rect(center=(self.width // 2, self.height // 2 + 50))
-            self.screen.blit(score_surface, score_rect)
         
         # 戻るボタンを描画
         self.back_button.draw(self.screen)

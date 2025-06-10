@@ -26,9 +26,6 @@ class GameManager:
         # 発見されたキャラクター
         self.discovered_characters = []
         
-        # スコア
-        self.score = 0
-        
         # 難易度
         self.difficulty = "easy"
     
@@ -60,18 +57,8 @@ class GameManager:
         if character not in self.discovered_characters:
             self.discovered_characters.append(character)
     
-    def add_score(self, points):
-        """
-        スコアを追加する
-        
-        Args:
-            points (int): 追加するポイント
-        """
-        self.score += points
-    
     def reset_game(self):
         """ゲームをリセットする"""
-        self.score = 0
         self.current_environment = None
     
     def set_difficulty(self, difficulty):
@@ -79,6 +66,6 @@ class GameManager:
         難易度を設定する
         
         Args:
-            difficulty (str): 難易度 ("easy" または "normal")
+            difficulty (str): 難易度 ("easy", "normal", または "hard")
         """
         self.difficulty = difficulty

@@ -117,6 +117,29 @@ class EnvironmentSelectScreen:
             hover_color=(130, 130, 130)
         )
         
+        # 難易度ボタン（難易度に応じた色で表示）
+        difficulty_colors = {
+            "easy": (46, 139, 87),    # 緑色
+            "normal": (70, 130, 180), # 青色
+            "hard": (178, 34, 34)     # 赤色
+        }
+        difficulty_hover_colors = {
+            "easy": (60, 179, 113),   # 緑色（ホバー時）
+            "normal": (30, 144, 255), # 青色（ホバー時）
+            "hard": (220, 20, 60)     # 赤色（ホバー時）
+        }
+        
+        self.difficulty_button = Button(
+            self.width - 170,
+            self.height - 80,
+            150,
+            50,
+            self._get_difficulty_text(),
+            font_size=28,
+            color=difficulty_colors.get(self.game_manager.difficulty, (70, 130, 180)),
+            hover_color=difficulty_hover_colors.get(self.game_manager.difficulty, (30, 144, 255))
+        )
+        
         # 環境のロック状態（全て解放）
         self.environment_locked = {
             "jungle": False,
@@ -152,6 +175,11 @@ class EnvironmentSelectScreen:
             self.game_manager.select_environment("forest")
             self.next_screen = GameScreen(self.screen, self.game_manager)
         
+        # 難易度ボタンのイベント処理
+        elif self.difficulty_button.handle_event(event):
+            from ui.difficulty_select import DifficultySelectScreen
+            self.next_screen = DifficultySelectScreen(self.screen, self.game_manager, self)
+        
         # 戻るボタンのイベント処理
         elif self.back_button.handle_event(event):
             from ui.menu import MainMenu
@@ -165,6 +193,25 @@ class EnvironmentSelectScreen:
         self.desert_button.update()
         self.forest_button.update()
         self.back_button.update()
+        self.difficulty_button.update()
+        
+        # 難易度ボタンのテキストと色を更新
+        self.difficulty_button.text = self._get_difficulty_text()
+        
+        # 難易度に応じた色に更新
+        difficulty_colors = {
+            "easy": (46, 139, 87),    # 緑色
+            "normal": (70, 130, 180), # 青色
+            "hard": (178, 34, 34)     # 赤色
+        }
+        difficulty_hover_colors = {
+            "easy": (60, 179, 113),   # 緑色（ホバー時）
+            "normal": (30, 144, 255), # 青色（ホバー時）
+            "hard": (220, 20, 60)     # 赤色（ホバー時）
+        }
+        
+        self.difficulty_button.color = difficulty_colors.get(self.game_manager.difficulty, (70, 130, 180))
+        self.difficulty_button.hover_color = difficulty_hover_colors.get(self.game_manager.difficulty, (30, 144, 255))
     
     def draw(self):
         """画面を描画する"""
@@ -216,6 +263,9 @@ class EnvironmentSelectScreen:
         
         # 戻るボタンを描画
         self.back_button.draw(self.screen)
+        
+        # 難易度ボタンを描画
+        self.difficulty_button.draw(self.screen)
     
     def _draw_button_text(self, button, text):
         """
@@ -289,3 +339,16 @@ class EnvironmentSelectScreen:
         next_screen = self.next_screen
         self.next_screen = None
         return next_screen
+    def _get_difficulty_text(self):
+        """
+        現在の難易度に応じたテキストを取得する
+        
+        Returns:
+            str: 難易度テキスト
+        """
+        difficulty_texts = {
+            "easy": "かんたん",
+            "normal": "ふつう",
+            "hard": "むずかしい"
+        }
+        return difficulty_texts.get(self.game_manager.difficulty, "かんたん")
