@@ -85,7 +85,7 @@ class GameScreen:
             rows, cols = 2, 5  # 10枚（5ペア）
             pairs_count = 5
         else:  # hard
-            rows, cols = 2, 7  # 14枚（7ペア）
+            rows, cols = 3, 5  # 14枚（7ペア）- 最後の行は4枚
             pairs_count = 7
         
         # 難易度に応じてカードのサイズと間隔を調整
@@ -98,9 +98,9 @@ class GameScreen:
             card_height = 160
             margin = 25
         else:  # hard
-            card_width = 90
-            card_height = 130
-            margin = 20
+            card_width = 110
+            card_height = 150
+            margin = 18
         
         # カードの配置開始位置
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
@@ -125,11 +125,22 @@ class GameScreen:
         
         # カードの位置を作成
         positions = []
-        for i in range(rows):
-            for j in range(cols):
-                x = start_x + j * (card_width + margin)
-                y = start_y + i * (card_height + margin)
-                positions.append((x, y))
+        if self.game_manager.difficulty == "hard":
+            # むずかしいモードでは3行（最後の行は4枚）
+            for i in range(rows):
+                row_cols = 4 if i == 2 else cols  # 3行目は4枚
+                row_start_x = (self.width - (row_cols * card_width + (row_cols - 1) * margin)) // 2
+                for j in range(row_cols):
+                    x = row_start_x + j * (card_width + margin)
+                    y = start_y + i * (card_height + margin)
+                    positions.append((x, y))
+        else:
+            # かんたん・ふつうモードは通常の配置
+            for i in range(rows):
+                for j in range(cols):
+                    x = start_x + j * (card_width + margin)
+                    y = start_y + i * (card_height + margin)
+                    positions.append((x, y))
         
         # 位置をシャッフル
         random.shuffle(positions)
