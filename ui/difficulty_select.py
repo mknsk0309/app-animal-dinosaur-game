@@ -169,15 +169,16 @@ class DifficultySelectScreen:
         self.hard_button.draw(self.screen)
         self.back_button.draw(self.screen)
         
-        # 選択中の難易度に黄色い枠を描画
+        # 選択中の難易度に黄色い枠を描画（角を丸く）
         border_width = 5
         padding = 15  # ボタンと枠の間の余白
+        border_radius = 15  # 角の丸みの半径
         if self.game_manager.difficulty == "easy":
-            pygame.draw.rect(self.screen, (255, 255, 0), self.easy_button.rect.inflate(padding*2, padding*2), border_width)
+            pygame.draw.rect(self.screen, (255, 255, 0), self.easy_button.rect.inflate(padding*2, padding*2), border_width, border_radius=border_radius)
         elif self.game_manager.difficulty == "normal":
-            pygame.draw.rect(self.screen, (255, 255, 0), self.normal_button.rect.inflate(padding*2, padding*2), border_width)
+            pygame.draw.rect(self.screen, (255, 255, 0), self.normal_button.rect.inflate(padding*2, padding*2), border_width, border_radius=border_radius)
         elif self.game_manager.difficulty == "hard":
-            pygame.draw.rect(self.screen, (255, 255, 0), self.hard_button.rect.inflate(padding*2, padding*2), border_width)
+            pygame.draw.rect(self.screen, (255, 255, 0), self.hard_button.rect.inflate(padding*2, padding*2), border_width, border_radius=border_radius)
     
     def get_next_screen(self):
         """
