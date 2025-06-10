@@ -81,7 +81,7 @@ class Button:
         
         # アニメーション更新
         if self.is_hovered:
-            self.target_scale = 1.05
+            self.target_scale = 1.03  # 1.05から1.03に縮小
         else:
             self.target_scale = 1.0
         
