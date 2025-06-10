@@ -8,6 +8,7 @@
 import pygame
 from ui.button import Button
 from utils.font_manager import FontManager
+from utils.resource_loader import ResourceLoader
 
 class GameScreen:
     """ゲーム画面クラス（神経衰弱ゲーム）"""
@@ -31,8 +32,17 @@ class GameScreen:
         self.title_font = FontManager.get_instance().get_font(36)
         self.info_font = FontManager.get_instance().get_font(24)
         
+        # リソースローダー
+        self.resource_loader = ResourceLoader.get_instance()
+        
         # 選択された環境
         self.environment = self.game_manager.current_environment
+        
+        # 背景画像の読み込み
+        self.background_image = self.resource_loader.load_background_image(
+            self.environment, 
+            (self.width, self.height)
+        )
         
         # 戻るボタン
         self.back_button = Button(
@@ -57,7 +67,7 @@ class GameScreen:
         self.total_pairs = len(self.cards) // 2
         self.game_over = False
         
-        # 環境に応じた背景色
+        # 環境に応じた背景色（背景画像がない場合のフォールバック）
         self.background_colors = {
             "jungle": (34, 139, 34),  # 森林緑
             "ocean": (0, 105, 148),   # 海色
@@ -82,7 +92,7 @@ class GameScreen:
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
         start_y = (self.height - (rows * card_height + (rows - 1) * margin)) // 2
         
-        # カードの作成（仮のプレースホルダー）
+        # カードの作成
         self.cards = []
         card_types = ["lion", "monkey", "elephant", "giraffe", "tiger", "panda"]
         
@@ -97,14 +107,29 @@ class GameScreen:
                 x = start_x + j * (card_width + margin)
                 y = start_y + i * (card_height + margin)
                 
+                # カード画像の読み込み
+                card_back_image = self.resource_loader.load_card_image(
+                    card_type, 
+                    flipped=True, 
+                    scale=(card_width, card_height)
+                )
+                
+                card_front_image = self.resource_loader.load_card_image(
+                    card_type, 
+                    flipped=False, 
+                    scale=(card_width, card_height)
+                )
+                
                 self.cards.append({
                     "rect": pygame.Rect(x, y, card_width, card_height),
                     "type": card_type,
                     "flipped": False,
-                    "matched": False
+                    "matched": False,
+                    "back_image": card_back_image,
+                    "front_image": card_front_image
                 })
         
-        # カードをシャッフル（仮の実装）
+        # カードをシャッフル
         import random
         random.shuffle(self.cards)
     
@@ -198,9 +223,13 @@ class GameScreen:
     
     def draw(self):
         """画面を描画する"""
-        # 環境に応じた背景色
-        bg_color = self.background_colors.get(self.environment, (240, 248, 255))
-        self.screen.fill(bg_color)
+        # 背景を描画
+        if self.background_image:
+            self.screen.blit(self.background_image, (0, 0))
+        else:
+            # 背景画像がない場合は色で塗りつぶす
+            bg_color = self.background_colors.get(self.environment, (240, 248, 255))
+            self.screen.fill(bg_color)
         
         # 環境名を描画
         environment_names = {
@@ -227,27 +256,13 @@ class GameScreen:
         # カードを描画
         for card in self.cards:
             if card["matched"]:
-                # マッチしたカードは透明に
-                pygame.draw.rect(self.screen, (200, 200, 200, 128), card["rect"], border_radius=10)
+                # マッチしたカードは半透明に
+                matched_image = card["front_image"].copy()
+                matched_image.set_alpha(128)
+                self.screen.blit(matched_image, card["rect"])
             elif card["flipped"]:
-                # めくられたカード
-                pygame.draw.rect(self.screen, (255, 255, 255), card["rect"], border_radius=10)
-                
-                # カードの種類に応じた色（仮）
-                card_colors = {
-                    "lion": (255, 165, 0),     # オレンジ
-                    "monkey": (139, 69, 19),   # 茶色
-                    "elephant": (128, 128, 128), # グレー
-                    "giraffe": (255, 215, 0),  # 金色
-                    "tiger": (255, 140, 0),    # 濃いオレンジ
-                    "panda": (0, 0, 0)         # 黒
-                }
-                color = card_colors.get(card["type"], (0, 0, 0))
-                
-                # 動物の絵の代わりに円を描画（仮）
-                center_x = card["rect"].centerx
-                center_y = card["rect"].centery
-                pygame.draw.circle(self.screen, color, (center_x, center_y), 30)
+                # めくられたカード（表面）
+                self.screen.blit(card["front_image"], card["rect"])
                 
                 # 動物の名前を描画
                 card_names = {
@@ -260,20 +275,11 @@ class GameScreen:
                 }
                 name = card_names.get(card["type"], "")
                 name_surface = self.info_font.render(name, True, (0, 0, 0))
-                name_rect = name_surface.get_rect(center=(center_x, center_y + 50))
+                name_rect = name_surface.get_rect(center=(card["rect"].centerx, card["rect"].bottom + 20))
                 self.screen.blit(name_surface, name_rect)
             else:
                 # 裏向きのカード
-                pygame.draw.rect(self.screen, (70, 130, 180), card["rect"], border_radius=10)
-                
-                # カードの模様（仮）
-                pygame.draw.rect(
-                    self.screen, 
-                    (30, 100, 150), 
-                    (card["rect"].left + 10, card["rect"].top + 10, 
-                     card["rect"].width - 20, card["rect"].height - 20), 
-                    border_radius=5
-                )
+                self.screen.blit(card["back_image"], card["rect"])
         
         # ゲームオーバー時の表示
         if self.game_over:
