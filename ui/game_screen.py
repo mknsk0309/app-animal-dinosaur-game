@@ -80,10 +80,13 @@ class GameScreen:
         # 難易度に応じたカードの配置
         if self.game_manager.difficulty == "easy":
             rows, cols = 2, 3  # 6枚（3ペア）
+            pairs_count = 3
         elif self.game_manager.difficulty == "normal":
             rows, cols = 2, 5  # 10枚（5ペア）
+            pairs_count = 5
         else:  # hard
             rows, cols = 2, 7  # 14枚（7ペア）
+            pairs_count = 7
         
         # 難易度に応じてカードのサイズと間隔を調整
         if self.game_manager.difficulty == "easy":
@@ -103,12 +106,12 @@ class GameScreen:
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
         start_y = (self.height - (rows * card_height + (rows - 1) * margin)) // 2
         
-        # 環境に応じたキャラクターを取得
-        from game.environment import Environment
-        characters = Environment.get_characters(self.environment)
+        # 環境と難易度に応じたキャラクターを取得
+        from game.character import Character
+        characters = Character.get_characters_by_environment(self.environment, self.game_manager.difficulty)
         
         # キャラクターが足りない場合は同じキャラクターを複数回使用
-        while len(characters) < 6:
+        while len(characters) < pairs_count:
             # 既存のキャラクターを複製して追加
             if len(characters) > 0:
                 characters.append(characters[0])  # 最初のキャラクターを再利用
@@ -116,63 +119,52 @@ class GameScreen:
                 # 万が一キャラクターがない場合はデフォルトを使用
                 characters = ["dolphin", "whale", "turtle"]
         
-        # 難易度に応じたペア数
-        if self.game_manager.difficulty == "easy":
-            pairs_count = 3
-        elif self.game_manager.difficulty == "normal":
-            pairs_count = 5
-        else:  # hard
-            pairs_count = 7
-        
-        pairs_count = min(pairs_count, len(characters))  # キャラクター数を超えないようにする
-        
-        # 使用するキャラクターを選択
+        # 使用するキャラクターを選択（重複なし）
         import random
         selected_characters = random.sample(characters, pairs_count)
         
-        # カードの作成
-        self.cards = []
+        # カードの位置を作成
+        positions = []
         for i in range(rows):
             for j in range(cols):
-                index = i * cols + j
-                card_type = selected_characters[index // 2 % pairs_count]
                 x = start_x + j * (card_width + margin)
                 y = start_y + i * (card_height + margin)
-                
-                # カード画像の読み込み
-                card_back_image = self.resource_loader.load_card_image(
-                    card_type, 
-                    flipped=True, 
-                    scale=(card_width, card_height),
-                    environment=self.environment
-                )
-                
-                card_front_image = self.resource_loader.load_card_image(
-                    card_type, 
-                    flipped=False, 
-                    scale=(card_width, card_height)
-                )
-                
-                self.cards.append({
-                    "rect": pygame.Rect(x, y, card_width, card_height),
-                    "type": card_type,
-                    "flipped": False,
-                    "matched": False,
-                    "back_image": card_back_image,
-                    "front_image": card_front_image
-                })
+                positions.append((x, y))
         
-        # カードの位置情報を保存
-        card_positions = []
-        for card in self.cards:
-            card_positions.append(card["rect"].copy())
+        # 位置をシャッフル
+        random.shuffle(positions)
         
-        # カードをシャッフル
-        random.shuffle(self.cards)
+        # カードの作成
+        self.cards = []
         
-        # シャッフル後のカードに位置情報を再設定
-        for i, card in enumerate(self.cards):
-            card["rect"] = card_positions[i]
+        # 各キャラクターについて2枚ずつカードを作成
+        for character in selected_characters:
+            for _ in range(2):  # 各キャラクター2枚ずつ
+                if positions:
+                    x, y = positions.pop(0)
+                    
+                    # カード画像の読み込み
+                    card_back_image = self.resource_loader.load_card_image(
+                        character, 
+                        flipped=True, 
+                        scale=(card_width, card_height),
+                        environment=self.environment
+                    )
+                    
+                    card_front_image = self.resource_loader.load_card_image(
+                        character, 
+                        flipped=False, 
+                        scale=(card_width, card_height)
+                    )
+                    
+                    self.cards.append({
+                        "rect": pygame.Rect(x, y, card_width, card_height),
+                        "type": character,
+                        "flipped": False,
+                        "matched": False,
+                        "back_image": card_back_image,
+                        "front_image": card_front_image
+                    })
     
     def handle_event(self, event):
         """
