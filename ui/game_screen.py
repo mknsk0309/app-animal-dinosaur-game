@@ -47,7 +47,7 @@ class GameScreen:
         # 戻るボタン
         self.back_button = Button(
             50,
-            self.height - 80,
+            self.height - 100,
             120,
             50,
             "もどる",
@@ -84,9 +84,9 @@ class GameScreen:
             rows, cols = 3, 4  # 12枚（6ペア）
         
         # カードのサイズと間隔
-        card_width = 100
-        card_height = 150
-        margin = 20
+        card_width = 140
+        card_height = 200
+        margin = 30
         
         # カードの配置開始位置
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
@@ -273,39 +273,6 @@ class GameScreen:
             elif card["flipped"]:
                 # めくられたカード（表面）
                 self.screen.blit(card["front_image"], card["rect"])
-                
-                # 動物・恐竜の名前を描画
-                card_names = {
-                    # 動物
-                    "lion": "ライオン",
-                    "monkey": "サル",
-                    "elephant": "ゾウ",
-                    "giraffe": "キリン",
-                    "tiger": "トラ",
-                    "panda": "パンダ",
-                    "dolphin": "イルカ",
-                    "whale": "クジラ",
-                    "turtle": "カメ",
-                    "camel": "ラクダ",
-                    "scorpion": "サソリ",
-                    "lizard": "トカゲ",
-                    "fox": "キツネ",
-                    "rabbit": "ウサギ",
-                    "squirrel": "リス",
-                    # 恐竜
-                    "tyrannosaurus": "ティラノサウルス",
-                    "velociraptor": "ヴェロキラプトル",
-                    "plesiosaurus": "プレシオサウルス",
-                    "mosasaurus": "モササウルス",
-                    "pteranodon": "プテラノドン",
-                    "spinosaurus": "スピノサウルス",
-                    "triceratops": "トリケラトプス",
-                    "stegosaurus": "ステゴサウルス"
-                }
-                name = card_names.get(card["type"], card["type"])
-                name_surface = self.info_font.render(name, True, (0, 0, 0))
-                name_rect = name_surface.get_rect(center=(card["rect"].centerx, card["rect"].bottom + 20))
-                self.screen.blit(name_surface, name_rect)
             else:
                 # 裏向きのカード
                 self.screen.blit(card["back_image"], card["rect"])
