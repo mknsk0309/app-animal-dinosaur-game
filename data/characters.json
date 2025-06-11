@@ -1,0 +1,240 @@
+{
+  "animals": [
+    {
+      "id": "lion",
+      "name": "ライオン",
+      "difficulty": 1,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "monkey",
+      "name": "サル",
+      "difficulty": 1,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "zebra",
+      "name": "シマウマ",
+      "difficulty": 1,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "dolphin",
+      "name": "イルカ",
+      "difficulty": 1,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "whale",
+      "name": "クジラ",
+      "difficulty": 1,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "seal",
+      "name": "アザラシ",
+      "difficulty": 1,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "camel",
+      "name": "ラクダ",
+      "difficulty": 1,
+      "environments": ["desert"]
+    },
+    {
+      "id": "lizard",
+      "name": "トカゲ",
+      "difficulty": 1,
+      "environments": ["desert"]
+    },
+    {
+      "id": "scorpion",
+      "name": "サソリ",
+      "difficulty": 1,
+      "environments": ["desert"]
+    },
+    {
+      "id": "rabbit",
+      "name": "ウサギ",
+      "difficulty": 1,
+      "environments": ["forest"]
+    },
+    {
+      "id": "squirrel",
+      "name": "リス",
+      "difficulty": 1,
+      "environments": ["forest"]
+    },
+    {
+      "id": "dear",
+      "name": "シカ",
+      "difficulty": 1,
+      "environments": ["forest"]
+    },
+    {
+      "id": "tiger",
+      "name": "トラ",
+      "difficulty": 2,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "gorilla",
+      "name": "ゴリラ",
+      "difficulty": 2,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "owl",
+      "name": "フクロウ",
+      "difficulty": 2,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "turtle",
+      "name": "カメ",
+      "difficulty": 2,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "octopus",
+      "name": "タコ",
+      "difficulty": 2,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "shark",
+      "name": "サメ",
+      "difficulty": 2,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "elephant",
+      "name": "ゾウ",
+      "difficulty": 2,
+      "environments": ["desert"]
+    },
+    {
+      "id": "rhinoceros",
+      "name": "サイ",
+      "difficulty": 2,
+      "environments": ["desert"]
+    },
+    {
+      "id": "kangaroo",
+      "name": "カンガルー",
+      "difficulty": 2,
+      "environments": ["desert"]
+    },
+    {
+      "id": "fox",
+      "name": "キツネ",
+      "difficulty": 2,
+      "environments": ["forest"]
+    },
+    {
+      "id": "panda",
+      "name": "パンダ",
+      "difficulty": 2,
+      "environments": ["forest"]
+    },
+    {
+      "id": "giraffe",
+      "name": "キリン",
+      "difficulty": 2,
+      "environments": ["forest"]
+    }
+  ],
+  "dinosaurs": [
+    {
+      "id": "velociraptor",
+      "name": "ヴェロキラプトル",
+      "difficulty": 2,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "pachycephalosaurus",
+      "name": "パキケファロサウルス",
+      "difficulty": 2,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "plesiosaurus",
+      "name": "プレシオサウルス",
+      "difficulty": 2,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "mammoth",
+      "name": "マンモス",
+      "difficulty": 2,
+      "environments": ["desert"]
+    },
+    {
+      "id": "parasaurolophus",
+      "name": "パラサウロロフス",
+      "difficulty": 2,
+      "environments": ["desert"]
+    },
+    {
+      "id": "deinonychus",
+      "name": "デイノニクス",
+      "difficulty": 2,
+      "environments": ["forest"]
+    },
+    {
+      "id": "ankylosaurus",
+      "name": "アンキロサウルス",
+      "difficulty": 2,
+      "environments": ["forest"]
+    },
+    {
+      "id": "tyrannosaurus",
+      "name": "ティラノサウルス",
+      "difficulty": 3,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "brachiosaurus",
+      "name": "ブラキオサウルス",
+      "difficulty": 3,
+      "environments": ["jungle"]
+    },
+    {
+      "id": "mosasaurus",
+      "name": "モササウルス",
+      "difficulty": 3,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "spinosaurus",
+      "name": "スピノサウルス",
+      "difficulty": 3,
+      "environments": ["ocean"]
+    },
+    {
+      "id": "quetzalcoatlus",
+      "name": "ケツァツコアトルス",
+      "difficulty": 3,
+      "environments": ["desert"]
+    },
+    {
+      "id": "pteranodon",
+      "name": "プテラノドン",
+      "difficulty": 3,
+      "environments": ["desert"]
+    },
+    {
+      "id": "stegosaurus",
+      "name": "ステゴサウルス",
+      "difficulty": 3,
+      "environments": ["forest"]
+    },
+    {
+      "id": "triceratops",
+      "name": "トリケラトプス",
+      "difficulty": 3,
+      "environments": ["forest"]
+    }
+  ]
+}

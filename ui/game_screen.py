@@ -9,6 +9,7 @@ import pygame
 from ui.button import Button
 from utils.font_manager import FontManager
 from utils.resource_loader import ResourceLoader
+from utils.config_loader import ConfigLoader
 
 class GameScreen:
     """ゲーム画面クラス（神経衰弱ゲーム）"""
@@ -34,6 +35,9 @@ class GameScreen:
         
         # リソースローダー
         self.resource_loader = ResourceLoader.get_instance()
+        
+        # 設定ローダー
+        self.config_loader = ConfigLoader.get_instance()
         
         # 選択された環境
         self.environment = self.game_manager.current_environment
@@ -69,39 +73,23 @@ class GameScreen:
         self.game_over = False
         
         # 環境に応じた背景色（背景画像がない場合のフォールバック）
-        self.background_colors = {
-            "jungle": (34, 139, 34),  # 森林緑
-            "ocean": (0, 105, 148),   # 海色
-            "desert": (210, 180, 140), # 砂色
-            "forest": (139, 69, 19)   # 茶色
-        }
+        from game.environment import Environment
+        self.background_color = Environment.get_background_color(self.environment)
     
     def initialize_cards(self):
         """カードを初期化する"""
+        # 難易度設定を取得
+        difficulty_config = self.config_loader.get_difficulty_config(self.game_manager.difficulty)
+        
         # 難易度に応じたカードの配置
-        if self.game_manager.difficulty == "easy":
-            rows, cols = 2, 3  # 6枚（3ペア）
-            pairs_count = 3
-        elif self.game_manager.difficulty == "normal":
-            rows, cols = 2, 5  # 10枚（5ペア）
-            pairs_count = 5
-        else:  # hard
-            rows, cols = 3, 5  # 14枚（7ペア）- 最後の行は4枚
-            pairs_count = 7
+        rows = difficulty_config.get("rows", 2)
+        cols = difficulty_config.get("cols", 3)
+        pairs_count = difficulty_config.get("pairs_count", 3)
         
         # 難易度に応じてカードのサイズと間隔を調整
-        if self.game_manager.difficulty == "easy":
-            card_width = 140
-            card_height = 200
-            margin = 30
-        elif self.game_manager.difficulty == "normal":
-            card_width = 110
-            card_height = 160
-            margin = 25
-        else:  # hard
-            card_width = 110
-            card_height = 150
-            margin = 18
+        card_width = difficulty_config.get("card_width", 140)
+        card_height = difficulty_config.get("card_height", 200)
+        margin = difficulty_config.get("margin", 30)
         
         # カードの配置開始位置
         start_x = (self.width - (cols * card_width + (cols - 1) * margin)) // 2
@@ -127,9 +115,11 @@ class GameScreen:
         # カードの位置を作成
         positions = []
         if self.game_manager.difficulty == "hard":
-            # むずかしいモードでは3行（最後の行は4枚）
+            # むずかしいモードでは最後の行の列数が異なる場合がある
+            last_row_cols = difficulty_config.get("last_row_cols", cols)
+            
             for i in range(rows):
-                row_cols = 4 if i == 2 else cols  # 3行目は4枚
+                row_cols = last_row_cols if i == rows - 1 and last_row_cols != cols else cols
                 row_start_x = (self.width - (row_cols * card_width + (row_cols - 1) * margin)) // 2
                 for j in range(row_cols):
                     x = row_start_x + j * (card_width + margin)
@@ -233,17 +223,15 @@ class GameScreen:
                         self.is_match = first_card["type"] == second_card["type"]
                         
                         # 待機時間を設定
+                        game_config = self.config_loader.get_game_config()
+                        difficulty_config = self.config_loader.get_difficulty_config(self.game_manager.difficulty)
+                        
                         if self.is_match:
-                            # ペア成立時は常に30フレーム
-                            self.wait_time = 30  # 0.5秒（30フレーム）
+                            # ペア成立時は一定の待機時間
+                            self.wait_time = game_config.get("match_wait_time", 30)
                         else:
-                            # ペア不成立時は難易度に応じて変更
-                            if self.game_manager.difficulty == "easy":
-                                self.wait_time = 45  # 約0.75秒（45フレーム）
-                            elif self.game_manager.difficulty == "normal":
-                                self.wait_time = 30  # 約0.5秒（30フレーム）
-                            else:  # hard
-                                self.wait_time = 15  # 約0.25秒（15フレーム）.wait_time = 15  # 約0.25秒（15フレーム）
+                            # ペア不成立時は難易度に応じた待機時間
+                            self.wait_time = difficulty_config.get("wait_time", 30)
                     break
     
     def update(self):
@@ -284,13 +272,12 @@ class GameScreen:
     
     def draw(self):
         """画面を描画する"""
-        # 背景を描画
+        # 通常の背景を描画
         if self.background_image:
             self.screen.blit(self.background_image, (0, 0))
         else:
             # 背景画像がない場合は色で塗りつぶす
-            bg_color = self.background_colors.get(self.environment, (240, 248, 255))
-            self.screen.fill(bg_color)
+            self.screen.fill(self.background_color)
         
         # 環境名を描画
         from game.environment import Environment
