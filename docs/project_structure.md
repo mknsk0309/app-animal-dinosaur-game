@@ -33,8 +33,13 @@ app-animal-dinosaur-game/
 ├── utils/                   # ユーティリティ
 │   ├── __init__.py
 │   ├── config.py            # 設定管理
+│   ├── config_loader.py     # 設定ファイル読み込み
 │   ├── font_manager.py      # フォント管理
 │   └── resource_loader.py   # リソース読み込み
+├── data/                    # データファイル
+│   ├── characters.json      # キャラクター情報
+│   ├── environments.json    # 環境情報
+│   └── game_config.json     # ゲーム設定
 └── docs/                    # ドキュメント
     ├── game_design.md       # ゲーム設計書
     ├── project_structure.md # プロジェクト構造
@@ -53,16 +58,10 @@ app-animal-dinosaur-game/
 │   ├── sticker_book.py      # シールブック機能
 │   └── hide_and_seek.py     # かくれんぼ機能
 ├── assets/
-│   ├── images/
-│   │   └── effects/         # エフェクト画像
 │   └── sounds/              # 音声ファイル
 │       ├── bgm/             # 背景音楽
 │       ├── sfx/             # 効果音
 │       └── voices/          # 音声ガイド
-├── data/                    # データファイル
-│   ├── characters.json      # キャラクター情報
-│   ├── environments.json    # 環境情報
-│   └── stickers.json        # シール情報
 └── utils/
     ├── save_manager.py      # セーブデータ管理
     └── sound_manager.py     # 音声管理
@@ -103,6 +102,71 @@ class GameManager:
         # 難易度設定処理
 ```
 
+### Environment
+環境（ステージ）を表すクラス
+```python
+class Environment:
+    # 環境の種類
+    TYPE_JUNGLE = "jungle"
+    TYPE_OCEAN = "ocean"
+    TYPE_DESERT = "desert"
+    TYPE_FOREST = "forest"
+    
+    @classmethod
+    def get_card_backs(cls, environment_type):
+        # 環境に対応するカード裏面のリストを取得
+        
+    @classmethod
+    def get_name(cls, environment_type):
+        # 環境の日本語名を取得
+        
+    @classmethod
+    def get_background_color(cls, environment_type):
+        # 環境の背景色を取得
+```
+
+### Character
+キャラクター（動物・恐竜）を表すクラス
+```python
+class Character:
+    # キャラクターの種類
+    TYPE_ANIMAL = "animal"
+    TYPE_DINOSAUR = "dinosaur"
+    
+    @classmethod
+    def get_character_info(cls, character_id):
+        # キャラクター情報を取得
+        
+    @classmethod
+    def get_name(cls, character_id):
+        # キャラクターの日本語名を取得
+        
+    @classmethod
+    def get_characters_by_environment(cls, environment_type, difficulty):
+        # 環境と難易度に対応するキャラクターのリストを取得
+```
+
+### ConfigLoader
+設定ファイルを読み込むクラス
+```python
+class ConfigLoader:
+    @classmethod
+    def get_instance(cls):
+        # シングルトンインスタンスを取得
+        
+    def load_config(self, config_name):
+        # 設定ファイルを読み込む
+        
+    def get_environments(self):
+        # 環境設定を取得
+        
+    def get_characters(self):
+        # キャラクター設定を取得
+        
+    def get_game_config(self):
+        # ゲーム設定を取得
+```
+
 ### Button
 UIボタンを表すクラス
 ```python
@@ -138,6 +202,7 @@ class Button:
 - 環境ごとの動物・恐竜の表示
 - 画像表示機能の実装
 - 難易度設定機能（かんたん・ふつう・むずかしい）
+- かくれんぼ要素（未実装）
 
 ### フェーズ3: 図鑑機能 🔄
 - 図鑑UI（基本構造のみ）
@@ -153,3 +218,10 @@ class Button:
 - サウンド実装
 - アニメーション追加
 - バグ修正とパフォーマンス最適化
+
+## データ構造
+
+### JSONファイル
+- **environments.json**: 環境の設定（名前、背景色、カード裏面）
+- **characters.json**: キャラクター情報（動物と恐竜）
+- **game_config.json**: ゲーム設定（難易度など）
