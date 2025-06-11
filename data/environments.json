@@ -1,0 +1,24 @@
+{
+  "environments": {
+    "jungle": {
+      "name": "ジャングル",
+      "background_color": [34, 139, 34],
+      "card_backs": ["tree1", "tree2", "flower"]
+    },
+    "ocean": {
+      "name": "うみ",
+      "background_color": [0, 105, 148],
+      "card_backs": ["bubble", "coral", "seaweed"]
+    },
+    "desert": {
+      "name": "さばく",
+      "background_color": [210, 180, 140],
+      "card_backs": ["cactus", "rock", "sand"]
+    },
+    "forest": {
+      "name": "もり",
+      "background_color": [139, 69, 19],
+      "card_backs": ["mushroom", "grass", "flower"]
+    }
+  }
+}

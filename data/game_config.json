@@ -1,0 +1,36 @@
+{
+  "difficulty_levels": {
+    "easy": {
+      "name": "かんたん",
+      "rows": 2,
+      "cols": 3,
+      "pairs_count": 3,
+      "card_width": 140,
+      "card_height": 200,
+      "margin": 30,
+      "wait_time": 45
+    },
+    "normal": {
+      "name": "ふつう",
+      "rows": 2,
+      "cols": 5,
+      "pairs_count": 5,
+      "card_width": 110,
+      "card_height": 160,
+      "margin": 25,
+      "wait_time": 30
+    },
+    "hard": {
+      "name": "むずかしい",
+      "rows": 3,
+      "cols": 5,
+      "pairs_count": 7,
+      "card_width": 110,
+      "card_height": 150,
+      "margin": 18,
+      "wait_time": 15,
+      "last_row_cols": 4
+    }
+  },
+  "match_wait_time": 30
+}

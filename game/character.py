@@ -5,6 +5,8 @@
 キャラクター（動物・恐竜）クラス
 """
 
+from utils.config_loader import ConfigLoader
+
 class Character:
     """キャラクター（動物・恐竜）を表すクラス"""
     
@@ -18,60 +20,6 @@ class Character:
     ENV_DESERT = "desert"
     ENV_FOREST = "forest"
     
-    # キャラクター情報の定義
-    # id: キャラクターの識別子
-    # name: 日本語名
-    # type: 種類（動物/恐竜）
-    # difficulty: 難易度（1: やさしい、2: ふつう、3: むずかしい）
-    # environments: 生息環境のリスト
-    CHARACTERS = {
-        # 動物（難易度1: やさしい）
-        "lion": {"name": "ライオン", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_JUNGLE]},
-        "monkey": {"name": "サル", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_JUNGLE]},
-        "zebra": {"name": "シマウマ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_JUNGLE]},
-        "dolphin": {"name": "イルカ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_OCEAN]},
-        "whale": {"name": "クジラ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_OCEAN]},
-        "seal": {"name": "アザラシ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_OCEAN]},
-        "camel": {"name": "ラクダ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_DESERT]},
-        "lizard": {"name": "トカゲ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_DESERT]},
-        "scorpion": {"name": "サソリ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_DESERT]},
-        "rabbit": {"name": "ウサギ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_FOREST]},
-        "squirrel": {"name": "リス", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_FOREST]},
-        "dear": {"name": "シカ", "type": TYPE_ANIMAL, "difficulty": 1, "environments": [ENV_FOREST]},
-        # 動物（難易度2: ふつう）
-        "tiger": {"name": "トラ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_JUNGLE]},
-        "gorilla": {"name": "ゴリラ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_JUNGLE]},
-        "owl": {"name": "フクロウ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_JUNGLE]},
-        "turtle": {"name": "カメ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_OCEAN]},
-        "octopus": {"name": "タコ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_OCEAN]},
-        "shark": {"name": "サメ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_OCEAN]},
-        "elephant": {"name": "ゾウ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_DESERT]},
-        "rhinoceros": {"name": "サイ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_DESERT]},
-        "kangaroo": {"name": "カンガルー", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_DESERT]},
-        "fox": {"name": "キツネ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_FOREST]},
-        "panda": {"name": "パンダ", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_FOREST]},
-        "giraffe": {"name": "キリン", "type": TYPE_ANIMAL, "difficulty": 2, "environments": [ENV_FOREST]},
-        
-        # 恐竜（難易度2: ふつう）
-        "velociraptor": {"name": "ヴェロキラプトル", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_JUNGLE]},
-        "pachycephalosaurus": {"name": "パキケファロサウルス", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_JUNGLE]},
-        "plesiosaurus": {"name": "プレシオサウルス", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_OCEAN]},
-        "mammoth": {"name": "マンモス", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_DESERT]},
-        "parasaurolophus": {"name": "パラサウロロフス", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_DESERT]},
-        "deinonychus": {"name": "デイノニクス", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_FOREST]},
-        "ankylosaurus": {"name": "アンキロサウルス", "type": TYPE_DINOSAUR, "difficulty": 2, "environments": [ENV_FOREST]},
-        
-        # 恐竜（難易度3: むずかしい）
-        "tyrannosaurus": {"name": "ティラノサウルス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_JUNGLE]},
-        "brachiosaurus": {"name": "ブラキオサウルス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_JUNGLE]},
-        "mosasaurus": {"name": "モササウルス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_OCEAN]},
-        "spinosaurus": {"name": "スピノサウルス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_OCEAN]},
-        "quetzalcoatlus": {"name": "ケツァツコアトルス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_DESERT]},
-        "pteranodon": {"name": "プテラノドン", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_DESERT]},
-        "stegosaurus": {"name": "ステゴサウルス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_FOREST]},
-        "triceratops": {"name": "トリケラトプス", "type": TYPE_DINOSAUR, "difficulty": 3, "environments": [ENV_FOREST]},
-    }
-    
     @classmethod
     def get_character_info(cls, character_id):
         """
@@ -83,7 +31,24 @@ class Character:
         Returns:
             dict: キャラクター情報
         """
-        return cls.CHARACTERS.get(character_id, {})
+        config_loader = ConfigLoader.get_instance()
+        characters = config_loader.get_characters()
+        
+        # 動物から検索
+        for animal in characters.get("animals", []):
+            if animal["id"] == character_id:
+                animal_info = animal.copy()
+                animal_info["type"] = cls.TYPE_ANIMAL
+                return animal_info
+        
+        # 恐竜から検索
+        for dinosaur in characters.get("dinosaurs", []):
+            if dinosaur["id"] == character_id:
+                dino_info = dinosaur.copy()
+                dino_info["type"] = cls.TYPE_DINOSAUR
+                return dino_info
+        
+        return {}
     
     @classmethod
     def get_name(cls, character_id):
@@ -111,27 +76,26 @@ class Character:
         Returns:
             list: キャラクターIDのリスト
         """
-        characters = []
+        animals = cls.get_animals_by_environment(environment_type, difficulty)
+        dinosaurs = cls.get_dinosaurs_by_environment(environment_type, difficulty)
         
-        # 難易度に応じた数値に変換
-        difficulty_level = 1  # デフォルトは「やさしい」
-        if difficulty == "normal":
-            difficulty_level = 2
-        elif difficulty == "hard":
-            difficulty_level = 3
+        characters = animals + dinosaurs
         
-        # 全キャラクターから条件に合うものを抽出
-        for character_id, info in cls.CHARACTERS.items():
-            # 環境が一致するか確認
-            if environment_type in info.get("environments", []):
-                # 難易度チェック
-                char_difficulty = info.get("difficulty", 1)
-                
-                # 難易度条件に合致するか確認
-                if (difficulty_level == 1 and char_difficulty == 1) or \
-                   (difficulty_level == 2 and char_difficulty <= 2) or \
-                   (difficulty_level == 3):
-                    characters.append(character_id)
+        # キャラクターが足りない場合は、他の環境から追加
+        if len(characters) < 3:  # 最低3種類は必要
+            # 他の環境から動物を追加
+            for env_type in [cls.ENV_JUNGLE, cls.ENV_OCEAN, cls.ENV_DESERT, cls.ENV_FOREST]:
+                if env_type != environment_type:
+                    extra_animals = cls.get_animals_by_environment(env_type, "easy")
+                    if extra_animals:
+                        characters.extend(extra_animals[:2])  # 最大2種類追加
+                    if len(characters) >= 3:
+                        break
+        
+        # それでも足りない場合は、既存のキャラクターを複製
+        while len(characters) < 3:
+            if len(characters) > 0:
+                characters.append(characters[0])  # 最初のキャラクターを再利用
         
         return characters
     
@@ -147,8 +111,32 @@ class Character:
         Returns:
             list: 動物IDのリスト
         """
-        characters = cls.get_characters_by_environment(environment_type, difficulty)
-        return [c for c in characters if cls.get_character_info(c).get("type") == cls.TYPE_ANIMAL]
+        config_loader = ConfigLoader.get_instance()
+        characters = config_loader.get_characters()
+        
+        # 難易度に応じた数値に変換
+        difficulty_level = 1  # デフォルトは「やさしい」
+        if difficulty == "normal":
+            difficulty_level = 2
+        elif difficulty == "hard":
+            difficulty_level = 3
+        
+        animals = []
+        
+        # 動物を環境と難易度でフィルタリング
+        for animal in characters.get("animals", []):
+            # 環境が一致するか確認
+            if environment_type in animal.get("environments", []):
+                # 難易度チェック
+                animal_difficulty = animal.get("difficulty", 1)
+                
+                # 難易度条件に合致するか確認
+                if (difficulty_level == 1 and animal_difficulty == 1) or \
+                   (difficulty_level == 2 and animal_difficulty <= 2) or \
+                   (difficulty_level == 3):
+                    animals.append(animal["id"])
+        
+        return animals
     
     @classmethod
     def get_dinosaurs_by_environment(cls, environment_type, difficulty="easy"):
@@ -162,5 +150,28 @@ class Character:
         Returns:
             list: 恐竜IDのリスト
         """
-        characters = cls.get_characters_by_environment(environment_type, difficulty)
-        return [c for c in characters if cls.get_character_info(c).get("type") == cls.TYPE_DINOSAUR]
+        config_loader = ConfigLoader.get_instance()
+        characters = config_loader.get_characters()
+        
+        # 難易度に応じた数値に変換
+        difficulty_level = 1  # デフォルトは「やさしい」
+        if difficulty == "normal":
+            difficulty_level = 2
+        elif difficulty == "hard":
+            difficulty_level = 3
+        
+        dinosaurs = []
+        
+        # 恐竜を環境と難易度でフィルタリング
+        for dinosaur in characters.get("dinosaurs", []):
+            # 環境が一致するか確認
+            if environment_type in dinosaur.get("environments", []):
+                # 難易度チェック
+                dino_difficulty = dinosaur.get("difficulty", 2)  # 恐竜はデフォルトで難易度2
+                
+                # 難易度条件に合致するか確認
+                if (difficulty_level >= 2 and dino_difficulty == 2) or \
+                   (difficulty_level == 3 and dino_difficulty == 3):
+                    dinosaurs.append(dinosaur["id"])
+        
+        return dinosaurs

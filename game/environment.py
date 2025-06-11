@@ -5,6 +5,8 @@
 環境（ステージ）クラス
 """
 
+from utils.config_loader import ConfigLoader
+
 class Environment:
     """環境（ステージ）を表すクラス"""
     
@@ -13,24 +15,6 @@ class Environment:
     TYPE_OCEAN = "ocean"
     TYPE_DESERT = "desert"
     TYPE_FOREST = "forest"
-    
-    # キャラクター情報はCharacterクラスに移動しました
-    
-    # 環境ごとのカード裏面
-    CARD_BACKS = {
-        TYPE_JUNGLE: ["tree1", "tree2", "flower"],
-        TYPE_OCEAN: ["bubble", "coral", "seaweed"],
-        TYPE_DESERT: ["cactus", "rock", "sand"],
-        TYPE_FOREST: ["mushroom", "grass", "flower"]
-    }
-    
-    # 環境の日本語名
-    NAMES = {
-        TYPE_JUNGLE: "ジャングル",
-        TYPE_OCEAN: "うみ",
-        TYPE_DESERT: "さばく",
-        TYPE_FOREST: "もり"
-    }
     
     @classmethod
     def get_animals(cls, environment_type, difficulty="easy"):
@@ -88,7 +72,12 @@ class Environment:
         Returns:
             list: カード裏面のリスト
         """
-        return cls.CARD_BACKS.get(environment_type, ["flower"])
+        config_loader = ConfigLoader.get_instance()
+        environments = config_loader.get_environments()
+        
+        if environment_type in environments:
+            return environments[environment_type].get("card_backs", ["flower"])
+        return ["flower"]
     
     @classmethod
     def get_name(cls, environment_type):
@@ -101,4 +90,27 @@ class Environment:
         Returns:
             str: 環境の日本語名
         """
-        return cls.NAMES.get(environment_type, "不明")
+        config_loader = ConfigLoader.get_instance()
+        environments = config_loader.get_environments()
+        
+        if environment_type in environments:
+            return environments[environment_type].get("name", "不明")
+        return "不明"
+    
+    @classmethod
+    def get_background_color(cls, environment_type):
+        """
+        環境の背景色を取得する
+        
+        Args:
+            environment_type (str): 環境の種類
+            
+        Returns:
+            tuple: 背景色 (R, G, B)
+        """
+        config_loader = ConfigLoader.get_instance()
+        environments = config_loader.get_environments()
+        
+        if environment_type in environments:
+            return tuple(environments[environment_type].get("background_color", (240, 248, 255)))
+        return (240, 248, 255)  # デフォルトは薄い水色
